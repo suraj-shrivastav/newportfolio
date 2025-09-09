@@ -1,8 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import ProjectCard from '../components/ProjectCard';
+
+const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, delay }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 hover:border-emerald-400/50 transition-all duration-500 hover:scale-105"
+      style={{
+        animationDelay: `${delay}s`,
+        animation: 'fadeInUp 0.8s ease-out forwards'
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-emerald-400/5 to-sky-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+      {/* Image container with overlay */}
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={imageUrl}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        {/* Action buttons overlay */}
+        <div className={`absolute inset-0 flex items-center justify-center space-x-4 transition-all duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          {projectUrl !== "#" && (
+            <a
+              href={projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              Live Demo
+            </a>
+          )}
+          <a
+            href={codeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 shadow-lg"
+          >
+            Code
+          </a>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300">
+          {title}
+        </h3>
+        <p className="text-slate-300 text-sm leading-relaxed">
+          {description}
+        </p>
+
+        {/* Tech tags could go here */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full">
+            React
+          </span>
+        </div>
+      </div>
+
+      {/* Bottom border accent */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-sky-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+    </div>
+  );
+};
 
 function ProjectsPage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const projects = [
     {
@@ -16,7 +87,7 @@ function ProjectsPage() {
     {
       id: 2,
       title: "Zerodha Clone",
-      description: "A frontend replica of the Zerodha trading platform.",
+      description: "A frontend replica of the Zerodha trading platform with modern UI/UX principles.",
       imageUrl: "zerodha.png",
       projectUrl: "https://frontend-opal-eta-40.vercel.app/",
       codeUrl: "https://github.com/suraj-shrivastav/frontend"
@@ -24,7 +95,7 @@ function ProjectsPage() {
     {
       id: 3,
       title: "Listing Site",
-      description: "This is a simple property listing site that allows users to list their hotels.",
+      description: "A modern property listing platform that allows users to list their hotels with beautiful imagery.",
       imageUrl: "listing.png",
       projectUrl: "#",
       codeUrl: "https://github.com/suraj-shrivastav/StaySpot"
@@ -32,7 +103,7 @@ function ProjectsPage() {
     {
       id: 4,
       title: "Expense Tracker",
-      description: "A lightweight tool to track personal expenses, visualize spending, and manage categories in real-time.",
+      description: "A lightweight tool to track personal expenses, visualize spending patterns, and manage categories in real-time.",
       imageUrl: "expense-tracker.png",
       projectUrl: "#",
       codeUrl: "https://github.com/suraj-shrivastav/money-tracker"
@@ -40,7 +111,7 @@ function ProjectsPage() {
     {
       id: 5,
       title: "Real-time Chat Application",
-      description: "A chat app built with WebSockets, supporting instant messaging, group chats, and user presence indicators.",
+      description: "A modern chat app built with WebSockets, supporting instant messaging, group chats, and user presence indicators.",
       imageUrl: "chat.png",
       projectUrl: "#",
       codeUrl: "https://github.com/suraj-shrivastav/chat-app"
@@ -56,7 +127,7 @@ function ProjectsPage() {
     {
       id: 7,
       title: "Conference Website",
-      description: "A modern and responsive conference website built with Svelte, featuring detailed information about the event, speakers, topics, schedule, and more.",
+      description: "A modern and responsive conference website built with Svelte, featuring detailed information about the event, speakers, and schedule.",
       imageUrl: "conference.png",
       projectUrl: "https://technext-one.vercel.app/",
       codeUrl: "https://github.com/suraj-shrivastav/conference"
@@ -65,45 +136,91 @@ function ProjectsPage() {
 
   useEffect(() => {
     setIsVisible(true);
+
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   return (
-    <div className="min-h-screen font-inter bg-gradient-to-br from-slate-900 to-black relative overflow-hidden py-20 text-gray-100">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(0, 200, 200, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0, 200, 200, 0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px',
-          animation: 'grid-pan 90s linear infinite'
-        }}></div>
+    <div className="min-h-screen font-inter relative overflow-hidden">
+      {/* Dynamic background with mouse-following gradient */}
+      <div
+        className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-black"
+        style={{
+          background: `
+            radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, 
+              rgba(16, 185, 129, 0.15), 
+              rgba(14, 165, 233, 0.1), 
+              transparent 50%),
+            linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #000000 100%)
+          `
+        }}
+      ></div>
+
+      {/* Animated grid background */}
+      <div className="fixed inset-0 opacity-20">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(16, 185, 129, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+            animation: 'grid-drift 60s linear infinite'
+          }}
+        ></div>
       </div>
 
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(15)].map((_, i) => (
+      {/* Floating orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute rounded-full"
+            className="absolute rounded-full blur-sm"
             style={{
-              width: `${1 + Math.random() * 2}px`,
-              height: `${1 + Math.random() * 2}px`,
-              backgroundColor: `rgba(100, 255, 218, ${0.4 + Math.random() * 0.4})`,
+              width: `${2 + Math.random() * 4}px`,
+              height: `${2 + Math.random() * 4}px`,
+              background: `linear-gradient(45deg, 
+                rgba(16, 185, 129, ${0.4 + Math.random() * 0.6}), 
+                rgba(14, 165, 233, ${0.4 + Math.random() * 0.6})
+              )`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `particle-float ${7 + Math.random() * 5}s ease-in-out infinite alternate`,
-              animationDelay: `${Math.random() * 7}s`,
+              animation: `float-orb ${8 + Math.random() * 8}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 8}s`,
             }}
           ></div>
         ))}
       </div>
 
-      <div className={`relative z-10 container mx-auto px-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-12 text-center leading-tight">
-          My <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-sky-400">Projects</span>
-        </h1>
+      {/* Main content */}
+      <div className={`relative z-10 container mx-auto px-6 py-20 transition-all duration-1200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+        {/* Header section */}
+        <div className="text-center mb-20">
+          <div className="inline-block">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight relative">
+              My{' '}
+              <span className="relative inline-block">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 animate-pulse">
+                  Projects
+                </span>
+                <div className="absolute -inset-2 bg-gradient-to-r from-emerald-400/20 to-sky-400/20 blur-lg -z-10"></div>
+              </span>
+            </h1>
+            <div className="w-32 h-1 bg-gradient-to-r from-emerald-400 to-sky-400 mx-auto mb-8 rounded-full"></div>
+          </div>
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Explore my collection of innovative web applications and creative solutions
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Projects grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
           {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
@@ -112,9 +229,18 @@ function ProjectsPage() {
               imageUrl={project.imageUrl}
               projectUrl={project.projectUrl}
               codeUrl={project.codeUrl}
-              delay={index * 0.15}
+              delay={index * 0.1}
             />
           ))}
+        </div>
+
+        {/* Bottom call-to-action */}
+        <div className="text-center mt-20">
+          <div className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500/20 to-sky-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-full text-emerald-400 font-medium hover:from-emerald-500/30 hover:to-sky-500/30 transition-all duration-300 cursor-pointer">
+            <span className="mr-2">✨</span>
+            More projects coming soon
+            <span className="ml-2">🚀</span>
+          </div>
         </div>
       </div>
 
@@ -125,25 +251,53 @@ function ProjectsPage() {
           font-family: 'Inter', sans-serif;
         }
 
-        @keyframes grid-pan {
-          0% { background-position: 0 0; }
-          100% { background-position: 50px 50px; }
+        @keyframes grid-drift {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(60px, 60px); }
         }
 
-        @keyframes particle-float {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translateY(-10px) translateX(5px); }
+        @keyframes float-orb {
+          0%, 100% { 
+            transform: translate(0, 0) scale(1);
+            opacity: 0.4;
+          }
+          50% { 
+            transform: translate(-20px, -30px) scale(1.2);
+            opacity: 0.8;
+          }
         }
 
         @keyframes fadeInUp {
           from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
           }
           to {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        .group:hover .group-hover\\:scale-110 {
+          transform: scale(1.1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #10b981, #0ea5e9);
+          border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #059669, #0284c7);
         }
       `}</style>
     </div>
