@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, delay }) => {
+const techColors = {
+  ReactJs: "bg-sky-500/20 text-sky-400",
+  "HTML/CSS": "bg-orange-500/20 text-orange-400",
+  JavaScript: "bg-yellow-500/20 text-yellow-400",
+  TailwindCSS: "bg-cyan-500/20 text-cyan-400",
+  "Bootstrap CSS": "bg-purple-500/20 text-purple-400",
+  MongoDB: "bg-green-500/20 text-green-400",
+  MySQL: "bg-blue-500/20 text-blue-400",
+  Socketio: "bg-gray-500/20 text-gray-300",
+  Svelte: "bg-red-500/20 text-red-400",
+  GeminiAPI: "bg-pink-500/20 text-pink-400",
+};
+
+const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, stack = [], delay }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -26,7 +39,10 @@ const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, delay 
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
         {/* Action buttons overlay */}
-        <div className={`absolute inset-0 flex items-center justify-center space-x-4 transition-all duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+        <div
+          className={`absolute inset-0 flex items-center justify-center space-x-4 transition-all duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
+        >
           {projectUrl !== "#" && (
             <a
               href={projectUrl}
@@ -53,15 +69,21 @@ const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, delay 
         <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300">
           {title}
         </h3>
-        <p className="text-slate-300 text-sm leading-relaxed">
-          {description}
-        </p>
+        <p className="text-slate-300 text-sm leading-relaxed">{description}</p>
 
-        {/* Tech tags could go here */}
+        {/* Tech stack tags */}
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full">
-            React
-          </span>
+          {stack.map((tech, idx) => {
+            const colorClasses = techColors[tech] || "bg-emerald-500/20 text-emerald-400";
+            return (
+              <span
+                key={idx}
+                className={`px-2 py-1 text-xs rounded-full ${colorClasses}`}
+              >
+                {tech}
+              </span>
+            );
+          })}
         </div>
       </div>
 
@@ -70,6 +92,8 @@ const ProjectCard = ({ title, description, imageUrl, projectUrl, codeUrl, delay 
     </div>
   );
 };
+
+
 
 function ProjectsPage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -82,7 +106,8 @@ function ProjectsPage() {
       description: "A responsive web app that emulates the UI and features of Google Gemini, focusing on polished design and seamless interaction.",
       imageUrl: "gemini.png",
       projectUrl: "https://chatbot-vert-psi.vercel.app/",
-      codeUrl: "https://github.com/suraj-shrivastav/chatbot"
+      codeUrl: "https://github.com/suraj-shrivastav/chatbot",
+      stack: ["GeminiAPI", "ReactJs", "HTML/CSS", "JavaScript"]
     },
     {
       id: 2,
@@ -90,7 +115,8 @@ function ProjectsPage() {
       description: "A frontend replica of the Zerodha trading platform with modern UI/UX principles.",
       imageUrl: "zerodha.png",
       projectUrl: "https://frontend-opal-eta-40.vercel.app/",
-      codeUrl: "https://github.com/suraj-shrivastav/frontend"
+      codeUrl: "https://github.com/suraj-shrivastav/frontend",
+      stack: ["HTML/CSS", "JavaScript"]
     },
     {
       id: 3,
@@ -98,7 +124,8 @@ function ProjectsPage() {
       description: "A modern property listing platform that allows users to list their hotels with beautiful imagery.",
       imageUrl: "listing.png",
       projectUrl: "#",
-      codeUrl: "https://github.com/suraj-shrivastav/StaySpot"
+      codeUrl: "https://github.com/suraj-shrivastav/StaySpot",
+      stack: ["ReactJs", "Bootstrap CSS", "HTML/CSS"]
     },
     {
       id: 4,
@@ -106,7 +133,8 @@ function ProjectsPage() {
       description: "A lightweight tool to track personal expenses, visualize spending patterns, and manage categories in real-time.",
       imageUrl: "expense-tracker.png",
       projectUrl: "#",
-      codeUrl: "https://github.com/suraj-shrivastav/money-tracker"
+      codeUrl: "https://github.com/suraj-shrivastav/money-tracker",
+      stack: ["ReactJs", "TailwindCSS", "JavaScript", "MongoDB"]
     },
     {
       id: 5,
@@ -114,7 +142,8 @@ function ProjectsPage() {
       description: "A modern chat app built with WebSockets, supporting instant messaging, group chats, and user presence indicators.",
       imageUrl: "chat.png",
       projectUrl: "#",
-      codeUrl: "https://github.com/suraj-shrivastav/chat-app"
+      codeUrl: "https://github.com/suraj-shrivastav/chat-app",
+      stack: ["ReactJs", "Socket.io", "TailwindCSS", "JavaScript", "MongoDB"]
     },
     {
       id: 6,
@@ -122,7 +151,8 @@ function ProjectsPage() {
       description: "A personal portfolio built with React to showcase projects, skills, and contact information with a modern UI.",
       imageUrl: "portfolio.png",
       projectUrl: "#",
-      codeUrl: "https://github.com/suraj-shrivastav/"
+      codeUrl: "https://github.com/suraj-shrivastav/",
+      stack: ["ReactJs", "TailwindCSS", "JavaScript"]
     },
     {
       id: 7,
@@ -130,7 +160,17 @@ function ProjectsPage() {
       description: "A modern and responsive conference website built with Svelte, featuring detailed information about the event, speakers, and schedule.",
       imageUrl: "conference.png",
       projectUrl: "https://technext-one.vercel.app/",
-      codeUrl: "https://github.com/suraj-shrivastav/conference"
+      codeUrl: "https://github.com/suraj-shrivastav/conference",
+      stack: ["Svelte"]
+    },
+    {
+      id: 8,
+      title: "Rating System",
+      description: "A Full Stack Web Application that allows users to register, submit ratings for stores, and manage operations through role-based access control.",
+      imageUrl: "roxiler.png",
+      projectUrl: "https://github.com/suraj-shrivastav/Roxiler",
+      codeUrl: "https://github.com/suraj-shrivastav/Roxiler",
+      stack: ["ReactJs", "MySQL", "TailwindCSS", "JavaScript"]
     }
   ];
 
@@ -230,6 +270,7 @@ function ProjectsPage() {
               projectUrl={project.projectUrl}
               codeUrl={project.codeUrl}
               delay={index * 0.1}
+              stack={project.stack}
             />
           ))}
         </div>
